@@ -1,6 +1,6 @@
 {
   "name": "hex2pantone",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A utility to convert hex color codes to the closest Pantone color match",
   "main": "index.js",
   "types": "index.d.ts",
