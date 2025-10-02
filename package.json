@@ -1,0 +1,42 @@
+{
+  "name": "hex2pantone",
+  "version": "1.0.0",
+  "description": "A utility to convert hex color codes to the closest Pantone color match",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "node test.js",
+    "build": "echo 'No build step required for this package'",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "hex",
+    "pantone",
+    "color",
+    "converter",
+    "design",
+    "rgb",
+    "color-matching",
+    "print",
+    "branding"
+  ],
+  "author": "Alex Gabe <info@vizitor.hu>",
+  "license": "MIT",
+  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexgabe-dev/hex2pantone.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alexgabe-dev/hex2pantone/issues"
+  },
+  "homepage": "https://github.com/alexgabe-dev/hex2pantone#readme",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "README.md"
+  ]
+}
