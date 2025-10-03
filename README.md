@@ -101,6 +101,34 @@ const distance = colorDistance([255, 0, 0], [0, 0, 0]);
 console.log(distance); // 441.67
 ```
 
+### `batchConvert(hexColors, options?)`
+
+process a bunch of hex colors at once (the new stuff!)
+
+```javascript
+const { batchConvert, getSuccessfulMatches } = require('hex2pantone');
+const colors = ['#FF0000', '#00FF00', '#0000FF', '#FF5733'];
+const result = batchConvert(colors, { includeDistance: true });
+
+console.log(`processed ${result.total} colors`);
+console.log(`successful: ${result.successful}, failed: ${result.failed}`);
+console.log(`success rate: ${result.successRate}%`);
+
+// get just the successful ones
+const successful = getSuccessfulMatches(result);
+successful.forEach(match => {
+  console.log(`${match.inputHex} → ${match.match.name}`);
+});
+```
+
+### `getSuccessfulMatches(batchResults)`
+
+get just the successful matches from batch results
+
+### `getFailedMatches(batchResults)`
+
+get just the failed ones (useful for debugging)
+
 ## examples
 
 ### basic color conversion
@@ -149,6 +177,33 @@ console.log(`found ${blueColors.length} blue colors`);
 // get all colors
 const allColors = getAllPantoneColors();
 console.log(`total pantone colors: ${allColors.length}`);
+```
+
+### batch processing
+
+```javascript
+const { batchConvert, getSuccessfulMatches, getFailedMatches } = require('hex2pantone');
+
+// process multiple colors at once
+const colors = ['#FF0000', '#00FF00', '#0000FF', '#FF5733', '#invalid'];
+const result = batchConvert(colors, { includeDistance: true });
+
+console.log(`processed ${result.total} colors`);
+console.log(`successful: ${result.successful}, failed: ${result.failed}`);
+
+// work with results
+const successful = getSuccessfulMatches(result);
+const failed = getFailedMatches(result);
+
+console.log('successful matches:');
+successful.forEach(match => {
+  console.log(`${match.inputHex} → ${match.match.name} (distance: ${match.distance})`);
+});
+
+console.log('failed ones:');
+failed.forEach(match => {
+  console.log(`${match.inputHex} - ${match.error}`);
+});
 ```
 
 ### typescript usage

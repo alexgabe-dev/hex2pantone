@@ -184,11 +184,80 @@ function searchPantoneColors(query) {
   );
 }
 
+// batch processing - if you have a bunch of colors to convert
+function batchConvert(hexColors, options = {}) {
+  // make sure we got an array, if not just wrap it
+  if (!Array.isArray(hexColors)) {
+    return {
+      error: 'hey, i need an array of hex colors for batch processing',
+      input: hexColors
+    };
+  }
+  
+  // empty error handling
+  if (hexColors.length === 0) {
+    return {
+      results: [],
+      message: 'you gave me an empty array, nothing to do here',
+      total: 0,
+      successful: 0,
+      failed: 0
+    };
+  }
+  
+  const results = [];
+  let successful = 0;
+  let failed = 0;
+  
+  // go through each color and convert it
+  for (let i = 0; i < hexColors.length; i++) {
+    const hex = hexColors[i];
+    const result = hex2pantone(hex, options);
+    
+    // add some extra info for batch processing
+    const batchResult = {
+      ...result,
+      originalIndex: i,
+      success: !result.error
+    };
+    
+    results.push(batchResult);
+    
+    if (result.error) {
+      failed++;
+    } else {
+      successful++;
+    }
+  }
+  
+  return {
+    results: results,
+    total: hexColors.length,
+    successful: successful,
+    failed: failed,
+    // some basic stats
+    successRate: Math.round((successful / hexColors.length) * 100)
+  };
+}
+
+// helper to get just the successful matches from batch results
+function getSuccessfulMatches(batchResults) {
+  return batchResults.results.filter(result => result.success);
+}
+
+// helper to get just the failed ones (useful for debugging)
+function getFailedMatches(batchResults) {
+  return batchResults.results.filter(result => !result.success);
+}
+
 // export everything so people can use it
 module.exports = {
   hex2pantone,
   getAllPantoneColors,
   searchPantoneColors,
   hexToRgb,
-  colorDistance
+  colorDistance,
+  batchConvert,
+  getSuccessfulMatches,
+  getFailedMatches
 };

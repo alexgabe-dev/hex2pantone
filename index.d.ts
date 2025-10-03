@@ -22,6 +22,21 @@ export interface Hex2PantoneResult {
   error?: string;
 }
 
+export interface BatchResult extends Hex2PantoneResult {
+  originalIndex: number;
+  success: boolean;
+}
+
+export interface BatchConvertResult {
+  results: BatchResult[];
+  total: number;
+  successful: number;
+  failed: number;
+  successRate: number;
+  message?: string;
+  error?: string;
+}
+
 // the main function 
 export function hex2pantone(hexColor: string, options?: Hex2PantoneOptions): Hex2PantoneResult;
 
@@ -36,3 +51,12 @@ export function hexToRgb(hex: string): [number, number, number];
 
 // calculate how different two colors are
 export function colorDistance(rgb1: [number, number, number], rgb2: [number, number, number]): number;
+
+// batch processing 
+export function batchConvert(hexColors: string[], options?: Hex2PantoneOptions): BatchConvertResult;
+
+// helper to get just the successful matches from batches
+export function getSuccessfulMatches(batchResults: BatchConvertResult): BatchResult[];
+
+// helper to get just the failed ones for debug
+export function getFailedMatches(batchResults: BatchConvertResult): BatchResult[];

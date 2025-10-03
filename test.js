@@ -1,5 +1,5 @@
 // tests for hex2pantone - making sure it actually works
-const { hex2pantone, getAllPantoneColors, searchPantoneColors, hexToRgb, colorDistance } = require('./index.js');
+const { hex2pantone, getAllPantoneColors, searchPantoneColors, hexToRgb, colorDistance, batchConvert, getSuccessfulMatches, getFailedMatches } = require('./index.js');
 
 // helper functions for testing
 function assert(condition, message) {
@@ -177,6 +177,69 @@ const tests = [
     // The match should be a dark/black Pantone color
     const [r, g, b] = result.match.rgb;
     assert(r < 100 && g < 100 && b < 100, 'Match should be dark colored');
+  },
+
+  // Batch processing tests
+  function testBatchConvertBasic() {
+    const colors = ['#FF0000', '#00FF00', '#0000FF'];
+    const result = batchConvert(colors);
+    assert(result.total === 3, 'Should process all 3 colors');
+    assert(result.successful === 3, 'Should successfully convert all colors');
+    assert(result.failed === 0, 'Should have no failures');
+    assert(result.successRate === 100, 'Should have 100% success rate');
+  },
+
+  function testBatchConvertWithErrors() {
+    const colors = ['#FF0000', 'invalid', '#0000FF'];
+    const result = batchConvert(colors);
+    assert(result.total === 3, 'Should process all 3 colors');
+    assert(result.successful === 2, 'Should successfully convert 2 colors');
+    assert(result.failed === 1, 'Should have 1 failure');
+    assert(result.successRate === 67, 'Should have 67% success rate');
+  },
+
+  function testBatchConvertEmptyArray() {
+    const result = batchConvert([]);
+    assert(result.total === 0, 'Should handle empty array');
+    assert(result.successful === 0, 'Should have no successful conversions');
+    assert(result.failed === 0, 'Should have no failures');
+    assert(result.message !== undefined, 'Should include message for empty array');
+  },
+
+  function testBatchConvertInvalidInput() {
+    const result = batchConvert('not an array');
+    assert(result.error !== undefined, 'Should return error for invalid input');
+  },
+
+  function testBatchConvertWithOptions() {
+    const colors = ['#FF0000', '#00FF00'];
+    const result = batchConvert(colors, { includeDistance: true });
+    assert(result.total === 2, 'Should process 2 colors');
+    assert(result.results[0].distance !== undefined, 'Should include distance in results');
+  },
+
+  function testGetSuccessfulMatches() {
+    const colors = ['#FF0000', 'invalid', '#00FF00'];
+    const batchResult = batchConvert(colors);
+    const successful = getSuccessfulMatches(batchResult);
+    assert(successful.length === 2, 'Should return 2 successful matches');
+    assert(successful.every(match => match.success), 'All matches should be successful');
+  },
+
+  function testGetFailedMatches() {
+    const colors = ['#FF0000', 'invalid', '#00FF00'];
+    const batchResult = batchConvert(colors);
+    const failed = getFailedMatches(batchResult);
+    assert(failed.length === 1, 'Should return 1 failed match');
+    assert(failed.every(match => !match.success), 'All matches should be failed');
+  },
+
+  function testBatchConvertOriginalIndex() {
+    const colors = ['#FF0000', 'invalid', '#00FF00'];
+    const result = batchConvert(colors);
+    assert(result.results[0].originalIndex === 0, 'First result should have index 0');
+    assert(result.results[1].originalIndex === 1, 'Second result should have index 1');
+    assert(result.results[2].originalIndex === 2, 'Third result should have index 2');
   }
 ];
 
