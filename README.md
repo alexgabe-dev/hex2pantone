@@ -279,6 +279,14 @@ this project is licensed under the mit license - see the [license](license) file
 
 ## changelog
 
+### 1.0.2
+- added batch processing functionality
+- new `batchConvert()` function for processing multiple colors at once
+- helper functions `getSuccessfulMatches()` and `getFailedMatches()`
+- batch processing includes success rate and detailed stats
+- updated typescript definitions for batch functions
+- added comprehensive tests for batch processing
+
 ### 1.0.0
 - initial release
 - basic hex to pantone conversion

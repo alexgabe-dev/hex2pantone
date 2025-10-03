@@ -194,7 +194,7 @@ function batchConvert(hexColors, options = {}) {
     };
   }
   
-  // empty error handling
+  // empty error handeling
   if (hexColors.length === 0) {
     return {
       results: [],
@@ -245,7 +245,7 @@ function getSuccessfulMatches(batchResults) {
   return batchResults.results.filter(result => result.success);
 }
 
-// helper to get just the failed ones (useful for debugging)
+// helper to get just the failed ones. for DEBUG
 function getFailedMatches(batchResults) {
   return batchResults.results.filter(result => !result.success);
 }
